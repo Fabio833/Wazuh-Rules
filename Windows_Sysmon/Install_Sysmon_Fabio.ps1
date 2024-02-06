@@ -1,7 +1,7 @@
 $sysinternals_repo = 'download.sysinternals.com'
 $sysinternals_downloadlink = 'https://download.sysinternals.com/files/Sysmon.zip'
 $sysinternals_folder = 'C:\Program Files\sysinternals'
-$sysinternals_zip = 'SysinternalsSuite.zip'
+$sysinternals_zip = 'Sysmon.zip'
 $sysmonconfig_downloadlink = 'https://raw.githubusercontent.com/Fabio833/sysmon-modular/master/sysmonconfig.xml'
 $sysmonconfig_file = 'sysmonconfig-export.xml'
 
