@@ -1,41 +1,56 @@
-[<img src="../images/logo_orange.svg" align="right" width="100" height="100" />](https://www.socfortress.co/)
+# install Suricata
 
-# Suricata [![Awesome](https://img.shields.io/badge/SOCFortress-Worlds%20First%20Free%20Cloud%20SOC-orange)](https://www.socfortress.co/trial.html)
-> Suricata is the leading independent open source threat detection engine. By combining intrusion detection (IDS), intrusion prevention (IPS), network security monitoring (NSM) and PCAP processing, Suricata can quickly identify, stop, and assess even the most sophisticated attacks.
+# Step 1 – Install Required Dependencies
+add-apt-repository ppa:oisf/suricata-stable
+apt-get update
 
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-[![your-own-soc-free-for-life-tier](https://img.shields.io/badge/Get%20Started-FREE%20FOR%20LIFE%20TIER-orange)](https://www.socfortress.co/trial.html)
+# Step 2 – Install Suricata
 
-## [Suricata Docs](https://suricata.readthedocs.io/en/latest/install.html)
+# get last version
+apt-get install suricata -y
 
-<!-- CONTACT -->
-## Need Help?
+# Step 3 – Configure Suricata
 
-SOCFortress - [![LinkedIn][linkedin-shield]][linkedin-url] - info@socfortress.co
+# download rules
+cd /tmp/ && curl -LO https://rules.emergingthreats.net/open/suricata-6.0.8/emerging.rules.tar.gz
+sudo tar -xvzf emerging.rules.tar.gz && sudo mv rules/*.rules /etc/suricata/rules/
+sudo chmod 640 /etc/suricata/rules/*.rules
 
-<div align="center">
-  <h2 align="center">Let SOCFortress Professional Services Take Your Open Source SIEM to the Next Level</h3>
-  <a href="https://www.socfortress.co/contact_form.html">
-    <img src="../images/Email%20Banner.png" alt="Banner">
-  </a>
+# update rules
 
+apt install -y python3-pip
+pip install --upgrade suricata-update
+suricata-update
 
-</div>
+# configurar interface o nome da interface
+ifconfig | ip a
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/socfortress/Wazuh-Rules
-[contributors-url]: https://github.com/socfortress/Wazuh-Rules/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/socfortress/Wazuh-Rules
-[forks-url]: https://github.com/socfortress/Wazuh-Rules/network/members
-[stars-shield]: https://img.shields.io/github/stars/socfortress/Wazuh-Rules
-[stars-url]: https://github.com/socfortress/Wazuh-Rules/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/badge/Help%20Desk-Help%20Desk-blue
-[license-url]: https://servicedesk.socfortress.co/help/2979687893
-[linkedin-shield]: https://img.shields.io/badge/Visit%20Us-www.socfortress.co-orange
-[linkedin-url]: https://www.socfortress.co/
-[fsecure-shield]: https://img.shields.io/badge/F--Secure-Check%20Them%20Out-blue
-[fsecure-url]: https://www.f-secure.com/no/business/solutions/elements-endpoint-protection/computer
+Procure os campos abaixo no arquivo /etc/suricata/suricata.yaml e altere 
+
+      HOME_NET: "<UBUNTU_IP>"
+      EXTERNAL_NET: "any"
+
+      default-rule-path: /etc/suricata/rules
+      rule-files:
+      - "*.rules"
+
+      # Global stats configuration
+      stats:
+      enabled: no
+
+      # Linux high speed capture support
+      af-packet:
+        - interface: INTERFACE 
+
+systemctl restart suricata
+
+#  Testar configuração
+
+suricata -T -c /etc/suricata/suricata.yaml -v
+
+suricata -c /etc/suricata/suricata.yaml -i interface
+
+# validar funcionamento
+
+tail -f /var/log/suricata.log
+tail -f /var/log/suricata/fast.log
