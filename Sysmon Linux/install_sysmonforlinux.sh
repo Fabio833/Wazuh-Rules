@@ -3,6 +3,17 @@
 # Detect the OS
 OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 
+#SIEM Ubuntu
+if [[ $OS == *"Ubuntu"* ]]; then
+#wazuh
+
+#SIEM CentOS/Redhat
+
+elif [[ $OS == *"Red Hat"* ]]; then
+#wazuh
+
+
+
 # Ubuntu 20.04 & 22.04
 if [[ $OS == *"Ubuntu"* ]]; then
     wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -62,3 +73,8 @@ fi
 
 # Install Sysmon
 sudo sysmon -i
+
+#configuração sysmon
+sudo mv /opt/sysmon/config.xml /opt/sysmon/config.xml.old
+sudo wget -O /opt/sysmon/config.xml https://raw.githubusercontent.com/Fabio833/Wazuh-Rules/main/Sysmon%20Linux/config/collect-all.xml
+sudo sysmon -c /opt/sysmon/config.xml
